@@ -1,0 +1,44 @@
+version: '3'
+services:
+  bunny1:
+    image: "heidiks/rabbitmq-delayed-message-exchange:latest"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "rabbitmq"
+    hostname: bunny1
+    container_name: bunny1
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - ./data:/var/lib/rabbitmq:rw
+      - ./config/definitions.json:/opt/definitions.json:ro
+      - ./config/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+  bunny2:
+    image: "heidiks/rabbitmq-delayed-message-exchange:latest"
+    hostname: bunny2
+    container_name: bunny2
+    links:
+      - bunny1
+    environment:
+      - CLUSTERED=true
+      - CLUSTER_WITH=rabbit1
+      - RAM_NODE=true
+    ports:
+      - "15673:15672"
+      - "5673:5672"
+  bunny3:
+    image: "heidiks/rabbitmq-delayed-message-exchange:latest"
+    hostname: bunny3
+    container_name: bunny3
+    links:
+      - bunny1
+      - bunny2
+    environment:
+      - CLUSTERED=true
+      - CLUSTER_WITH=rabbit1
+    ports:
+      - "15674:15672"
+      - "5674:5672"

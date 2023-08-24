@@ -1,2 +1,2 @@
 # docker-rabbitmq-cluster
-Rabbitmq Local Cluster with Custom config - Load queues and exchanges
+RabbitMq Local Cluster with Custom config - Load queues and exchanges
